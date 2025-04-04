@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LootchasersAPI", "LootchasersAPI\LootchasersAPI.csproj", "{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C669D42A-B820-4ADC-91BD-2226EF461BDE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Debug|x64.ActiveCfg = Debug|x64
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Debug|x64.Build.0 = Debug|x64
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Release|x64.ActiveCfg = Release|x64
+		{6A8E67BA-6898-43D1-9DA9-4E29AFE23949}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5C452EA-94AE-437D-BF5E-BB6EF50B7089}
+	EndGlobalSection
+EndGlobal
