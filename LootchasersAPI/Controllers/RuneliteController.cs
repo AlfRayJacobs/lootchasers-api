@@ -20,7 +20,7 @@ public class RuneliteController : ControllerBase
     public Dictionary<string, string> WebHooks = new(){
         { "LOOT", "https://discord.com/api/webhooks/1357558534207705099/PQkqeNWdFs-hvea1LDHvUHktIQDLixuNN-O5IF9tq1DDbW_zaWecMnAFyexxf8SknFZk" },
         { "COLLECTION_LOG", "https://discord.com/api/webhooks/1357559441880387764/dEetoH1yBjycE7rN4WLa66uDi0zBxpKjlLidprN_OoU0K8EwFNeP2_uhKz-A2Re78hBL" },
-        { "CLUE_SCROLLS", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD" },
+        { "CLUE", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD" },
         { "PLAYER_KILLS", "https://discord.com/api/webhooks/1357559093048512613/neNGF392D7AOcb2MOt4PJx-uG8uHAJAxSNoxQ_cugTQCjPcnw_aq_H58gsYJRdn9Y7Z_" },
         { "DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N" }
     };
