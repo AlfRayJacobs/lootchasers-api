@@ -47,8 +47,6 @@ public class RuneliteController : ControllerBase
 
         var imageByteArray = await fileContent.ReadAsByteArrayAsync();
 
-        using var httpClient = new HttpClient();
-
         var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
         if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
             return BadRequest("Invalid webhook type");
