@@ -30,7 +30,10 @@ public class RuneliteController : ControllerBase
         new("CLUE", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD", null),
         new("PLAYER_KILL", "https://discord.com/api/webhooks/1357559093048512613/neNGF392D7AOcb2MOt4PJx-uG8uHAJAxSNoxQ_cugTQCjPcnw_aq_H58gsYJRdn9Y7Z", null),
         new("DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N", null),
-        new("LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2", null)
+        new("LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2", null),
+        new("PET", "https://discord.com/api/webhooks/1358216916929478777/ZOEBzf7sXPn9tUXoy85qjy9FasyIJGjgPOSk5PwkorzyE2J0uLzVMhFUzEuH-urYEVkV", null),
+        new("SPEEDRUN", "https://discord.com/api/webhooks/1358217056184569956/bgSw8Mc1Nm7OZIY9uMGFBWkmVw-NNr3TJOZQolzlnBMc2nNktvePNsvpPHhrMqxqfOwE", null),
+        new("COMBAT", "https://discord.com/api/webhooks/1358217142667055447/ysUDBFmAs336mSUx0egcOm-6K_tUyuxLNLKE-5Dr6KrcWc2cL1HJqC0WcCqYIGfhk3-0", null)
     };
 
     [HttpPost(Name = "Runelite")]
