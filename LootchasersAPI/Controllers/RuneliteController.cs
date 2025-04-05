@@ -13,7 +13,8 @@ public class RuneliteController : ControllerBase
     private record Payload(string content);
     #pragma warning restore IDE1006 // Naming Styles
     private readonly IHttpClientFactory _httpClientFactory;
-    
+    private static readonly long LootValueThreshold = 2_000_000;
+
     public RuneliteController(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
@@ -63,7 +64,7 @@ public class RuneliteController : ControllerBase
             var totalValueStr = JsonParser.GetNodeFromJson(payloadJson!, "totalValue");
             var totalValue = JsonParser.ParseStackValue(totalValueStr);
 
-            if (totalValue < 2_000_000)
+            if (totalValue < LootValueThreshold)
                 return BadRequest("Total value must be at least 2 million.");
         }
 
