@@ -63,7 +63,7 @@ public class RuneliteController : ControllerBase
         if (inputType is null)
             return BadRequest("Invalid webhook type");
 
-        if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!)
+        if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!))
             return BadRequest("Request did not pass the ruleset provided");
 
         var httpClient = _httpClientFactory.CreateClient();
