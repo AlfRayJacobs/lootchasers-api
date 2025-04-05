@@ -36,8 +36,10 @@ public class RuneliteController : ControllerBase
         Console.WriteLine($"Received JSON Payload: {payloadJson}");
         
         if (JsonParser.GetNodeFromJson(payloadJson!, "clanName") != "LootChasers")
+        {
             return BadRequest("Invalid clan");
-            
+        }
+
         var file = form.Files["file"];
 
         using var multipartContent = new MultipartFormDataContent();
@@ -55,6 +57,15 @@ public class RuneliteController : ControllerBase
         var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
         if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
             return BadRequest("Invalid webhook type");
+
+        if (hookUrl == WebHooks["LOOT"])
+        {
+            var totalValueStr = JsonParser.GetNodeFromJson(payloadJson!, "totalValue");
+            var totalValue = JsonParser.ParseStackValue(totalValueStr);
+
+            if (totalValue < 2_000_000)
+                return BadRequest("Total value must be at least 2 million.");
+        }
 
         var httpClient = _httpClientFactory.CreateClient();
         using var response = await httpClient.PostAsync(hookUrl, multipartContent);
