@@ -22,7 +22,8 @@ public class RuneliteController : ControllerBase
         { "COLLECTION", "https://discord.com/api/webhooks/1357559441880387764/dEetoH1yBjycE7rN4WLa66uDi0zBxpKjlLidprN_OoU0K8EwFNeP2_uhKz-A2Re78hBL" },
         { "CLUE", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD" },
         { "PLAYER_KILL", "https://discord.com/api/webhooks/1357559093048512613/neNGF392D7AOcb2MOt4PJx-uG8uHAJAxSNoxQ_cugTQCjPcnw_aq_H58gsYJRdn9Y7Z_" },
-        { "DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N" }
+        { "DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N" },
+        { "LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2"}
     };
 
     [HttpPost(Name = "Runelite")]
@@ -34,7 +35,7 @@ public class RuneliteController : ControllerBase
 
         var file = form.Files["file"];
 
-       using var multipartContent = new MultipartFormDataContent();
+        using var multipartContent = new MultipartFormDataContent();
 
         var jsonContent = new StringContent(payloadJson!, System.Text.Encoding.UTF8, "application/json");
         multipartContent.Add(jsonContent, "payload_json");
@@ -46,13 +47,12 @@ public class RuneliteController : ControllerBase
 
         var imageByteArray = await fileContent.ReadAsByteArrayAsync();
 
-        using var httpClient = new HttpClient();
-
         var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
         if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
             return BadRequest("Invalid webhook type");
 
-        var response = await httpClient.PostAsync(hookUrl, multipartContent);
+        using var httpClient = new HttpClient();
+        using var response = await httpClient.PostAsync(hookUrl, multipartContent);
 
         return Ok(new
         {
