@@ -1,3 +1,5 @@
+using LootchasersAPI.Classes.RuleSets;
+using LootchasersAPI.Interfaces;
 using LootchasersAPI.Services;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +21,16 @@ public class RuneliteController : ControllerBase
         _httpClientFactory = httpClientFactory;
     }
 
-    public Dictionary<string, string> WebHooks = new(){
-        { "LOOT", "https://discord.com/api/webhooks/1357558534207705099/PQkqeNWdFs-hvea1LDHvUHktIQDLixuNN-O5IF9tq1DDbW_zaWecMnAFyexxf8SknFZk" },
-        { "COLLECTION", "https://discord.com/api/webhooks/1357559441880387764/dEetoH1yBjycE7rN4WLa66uDi0zBxpKjlLidprN_OoU0K8EwFNeP2_uhKz-A2Re78hBL" },
-        { "CLUE", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD" },
-        { "PLAYER_KILL", "https://discord.com/api/webhooks/1357559093048512613/neNGF392D7AOcb2MOt4PJx-uG8uHAJAxSNoxQ_cugTQCjPcnw_aq_H58gsYJRdn9Y7Z_" },
-        { "DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N" },
-        { "LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2"}
+    private record Type (string name, string webhook, IRuleSet? rules);
+
+    private List<Type> InputTypes = new()
+    {
+        new("LOOT", "https://discord.com/api/webhooks/1357558534207705099/PQkqeNWdFs-hvea1LDHvUHktIQDLixuNN-O5IF9tq1DDbW_zaWecMnAFyexxf8SknFZk", new LootRuleset()),
+        new("COLLECTION", "https://discord.com/api/webhooks/1357559441880387764/dEetoH1yBjycE7rN4WLa66uDi0zBxpKjlLidprN_OoU0K8EwFNeP2_uhKz-A2Re78hBL", null),
+        new("CLUE", "https://discord.com/api/webhooks/1357559343326953622/RYTA2QkJSAcVGY3jieurkdbeCSUEhRwkuvQtYxsDugSuJGnw5LTiPvIY77uJCnGFKtmD", null),
+        new("PLAYER_KILL", "https://discord.com/api/webhooks/1357559093048512613/neNGF392D7AOcb2MOt4PJx-uG8uHAJAxSNoxQ_cugTQCjPcnw_aq_H58gsYJRdn9Y7Z", null),
+        new("DEATH", "https://discord.com/api/webhooks/1357558802982899812/rDdt_j69xwhAEfa3S3j3C8pWRTAAv-eYOWFtLUk2OZSRGea0FpxOYO6pn8bWZm0bzL0N", null),
+        new("LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2", null)
     };
 
     [HttpPost(Name = "Runelite")]
@@ -53,11 +58,16 @@ public class RuneliteController : ControllerBase
         var imageByteArray = await fileContent.ReadAsByteArrayAsync();
 
         var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
-        if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
+        var inputType = InputTypes.FirstOrDefault(x => x.name == type);
+
+        if (inputType is null)
             return BadRequest("Invalid webhook type");
 
+        if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!))
+            return BadRequest("Request did not pass the ruleset provided");
+
         var httpClient = _httpClientFactory.CreateClient();
-        using var response = await httpClient.PostAsync(hookUrl, multipartContent);
+        using var response = await httpClient.PostAsync(inputType.webhook, multipartContent);
 
         return Ok(new
         {
