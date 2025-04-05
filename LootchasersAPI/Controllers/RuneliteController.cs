@@ -12,9 +12,11 @@ public class RuneliteController : ControllerBase
     #pragma warning disable IDE1006 // Naming Styles
     private record Payload(string content);
     #pragma warning restore IDE1006 // Naming Styles
-
-    public RuneliteController()
+    private readonly IHttpClientFactory _httpClientFactory;
+    
+    public RuneliteController(IHttpClientFactory httpClientFactory)
     {
+        _httpClientFactory = httpClientFactory;
     }
 
     public Dictionary<string, string> WebHooks = new(){
@@ -51,7 +53,7 @@ public class RuneliteController : ControllerBase
         if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
             return BadRequest("Invalid webhook type");
 
-        using var httpClient = new HttpClient();
+        var httpClient = _httpClientFactory.CreateClient();
         using var response = await httpClient.PostAsync(hookUrl, multipartContent);
 
         return Ok(new
