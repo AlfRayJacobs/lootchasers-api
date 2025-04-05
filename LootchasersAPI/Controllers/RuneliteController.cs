@@ -35,7 +35,7 @@ public class RuneliteController : ControllerBase
 
         var file = form.Files["file"];
 
-       using var multipartContent = new MultipartFormDataContent();
+        using var multipartContent = new MultipartFormDataContent();
 
         var jsonContent = new StringContent(payloadJson!, System.Text.Encoding.UTF8, "application/json");
         multipartContent.Add(jsonContent, "payload_json");
@@ -53,7 +53,8 @@ public class RuneliteController : ControllerBase
         if (!WebHooks.TryGetValue(type ?? "NONE", out var hookUrl))
             return BadRequest("Invalid webhook type");
 
-        var response = await httpClient.PostAsync(hookUrl, multipartContent);
+        using var httpClient = new HttpClient();
+        using var response = await httpClient.PostAsync(hookUrl, multipartContent);
 
         return Ok(new
         {
