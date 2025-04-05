@@ -34,7 +34,10 @@ public class RuneliteController : ControllerBase
     {
         var payloadJson = form["payload_json"];
         Console.WriteLine($"Received JSON Payload: {payloadJson}");
-
+        
+        if (JsonParser.GetNodeFromJson(payloadJson, "clanName") != "LootChasers")
+            return BadRequest("Invalid clan");
+            
         var file = form.Files["file"];
 
         using var multipartContent = new MultipartFormDataContent();
