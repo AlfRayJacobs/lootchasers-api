@@ -1,0 +1,15 @@
+services:
+  lootchasersapi:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    restart: unless-stopped
+    init: true
+    # env_file: ./.env  # Uncomment if .env file exists
+    networks:
+      - app_network
+networks:
+  app_network:
+    driver: bridge
