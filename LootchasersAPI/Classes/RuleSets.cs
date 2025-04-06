@@ -18,35 +18,7 @@ namespace LootchasersAPI.Classes.RuleSets
             if (valueFromJson is null)
                 return 0;
 
-            var regexMatches = Regex.Matches(valueFromJson!, @"\d+[KMB]?");
-            return regexMatches.Count > 0 ? ParseStackValue(regexMatches.First().Value) : 0;
-        }
-
-        private long ParseStackValue(string? input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return 0;
-            }
-
-            input = input.Trim().ToUpperInvariant();
-
-            if (input.EndsWith("M"))
-            {
-                if (double.TryParse(input.TrimEnd('M'), out var mVal))
-                    return (long)(mVal * 1_000_000);
-            }
-            else if (input.EndsWith("K"))
-            {
-                if (double.TryParse(input.TrimEnd('K'), out var kVal))
-                    return (long)(kVal * 1_000);
-            }
-            else if (long.TryParse(input.Replace(",", ""), out var plainVal))
-            {
-                return plainVal;
-            }
-
-            return 0;
-        }
+            return ValueConverter.ParseStackValue(valueFromJson);
+        }        
     }
 }
