@@ -7,7 +7,7 @@ namespace LootchasersAPI.Classes.RuleSets
 {
     public class LootRuleset : IRuleSet
     {
-        private readonly int MIN_VALUE = 100_000;
+        private readonly int MIN_VALUE = 1_000_000;
 
         public bool ShouldSendNotification(string jsonContent) => GetItemCost(jsonContent) > MIN_VALUE;
 
