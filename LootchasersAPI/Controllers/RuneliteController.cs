@@ -41,17 +41,29 @@ public class RuneliteController : ControllerBase
     public async Task<IActionResult> Runelite([FromForm] IFormCollection form)
     {
         var payloadJson = form["payload_json"];
-        Console.WriteLine($"Received JSON Payload: {payloadJson}");
+
+        var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
+        var inputType = InputTypes.FirstOrDefault(x => x.name == type);
+        var user = JsonParser.GetNodeFromJson(payloadJson!, "playerName");
+
+        if (inputType is null)
+        {
+            Console.WriteLine($"Received webhook request from {user} with invalid type of {type}");
+            return BadRequest("Invalid webhook type");
+        }
+
+        if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!))
+        {
+            Console.WriteLine($"Received webhook request from {user} for type {type} which didn't pass ruleset");
+            return BadRequest("Request did not pass the ruleset provided");
+        }
 
         var clanName = JsonParser.GetNodeFromJson(payloadJson!, "clanName");
-
         if (clanName is not null && clanName != "LootChasers")
             return BadRequest("Invalid clan");
 
         var file = form.Files["file"];
-
         using var multipartContent = new MultipartFormDataContent();
-
         var jsonContent = new StringContent(payloadJson!, System.Text.Encoding.UTF8, "application/json");
         multipartContent.Add(jsonContent, "payload_json");
 
@@ -62,17 +74,10 @@ public class RuneliteController : ControllerBase
 
         var imageByteArray = await fileContent.ReadAsByteArrayAsync();
 
-        var type = JsonParser.GetNodeFromJson(payloadJson!, "type");
-        var inputType = InputTypes.FirstOrDefault(x => x.name == type);
-
-        if (inputType is null)
-            return BadRequest("Invalid webhook type");
-
-        if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!))
-            return BadRequest("Request did not pass the ruleset provided");
-
         var httpClient = _httpClientFactory.CreateClient();
         using var response = await httpClient.PostAsync(inputType.webhook, multipartContent);
+
+        Console.WriteLine($"Successfully transmitted {type} request from {user}");
 
         return Ok(new
         {
