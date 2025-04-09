@@ -1,7 +1,5 @@
 ﻿using LootchasersAPI.Interfaces;
 using LootchasersAPI.Services;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace LootchasersAPI.Classes.RuleSets
 {
@@ -20,5 +18,18 @@ namespace LootchasersAPI.Classes.RuleSets
 
             return ValueConverter.ParseStackValue(valueFromJson);
         }        
+    }
+
+    public class ClueRuleset : IRuleSet
+    {
+        private readonly int MIN_VALUE = 1_000_000;
+
+        public bool ShouldSendNotification(string jsonContent) => GetClueValue(jsonContent) > MIN_VALUE;
+
+        private long GetClueValue(string jsonContent)
+        {
+            var items = JsonParser.GetItemsFromJson(jsonContent);
+            return items is null ? 0 : (long)items.Sum(x => x.Quantity * x.PriceEach);
+        }
     }
 }
