@@ -33,7 +33,8 @@ public class RuneliteController : ControllerBase
         new("LEVEL", "https://discord.com/api/webhooks/1358118755108126732/dx1_agH0YIYPWP7rLRXmkOWDFP3wT5mwOC8SyO5LAxQErXeUcW85amHkYRqoSfJnXah2", null),
         new("PET", "https://discord.com/api/webhooks/1358216916929478777/ZOEBzf7sXPn9tUXoy85qjy9FasyIJGjgPOSk5PwkorzyE2J0uLzVMhFUzEuH-urYEVkV", null),
         new("KILL_COUNT", "https://discord.com/api/webhooks/1358217056184569956/bgSw8Mc1Nm7OZIY9uMGFBWkmVw-NNr3TJOZQolzlnBMc2nNktvePNsvpPHhrMqxqfOwE", null),
-        new("COMBAT_ACHIEVEMENT", "https://discord.com/api/webhooks/1358217142667055447/ysUDBFmAs336mSUx0egcOm-6K_tUyuxLNLKE-5Dr6KrcWc2cL1HJqC0WcCqYIGfhk3-0", null)
+        new("COMBAT_ACHIEVEMENT", "https://discord.com/api/webhooks/1358217142667055447/ysUDBFmAs336mSUx0egcOm-6K_tUyuxLNLKE-5Dr6KrcWc2cL1HJqC0WcCqYIGfhk3-0", null),
+        new("CHAT", "https://discord.com/api/webhooks/1359636789241057533/tTs2gXdD60FtfRrCnlfKhp6n3IjomiY_8-SCYKFiFXiJunSeHWQFJTKZtyrunHAxybH6", new ChatRuleset())
     };
 
     [HttpPost(Name = "Runelite")]
@@ -48,13 +49,11 @@ public class RuneliteController : ControllerBase
 
         if (inputType is null)
         {
-            Console.WriteLine($"Received webhook request from {user} with invalid type of {type}");
             return BadRequest("Invalid webhook type");
         }
 
         if (inputType.rules is not null && !inputType.rules.ShouldSendNotification(payloadJson!))
         {
-            Console.WriteLine($"Received webhook request from {user} for type {type} which didn't pass ruleset");
             return BadRequest("Request did not pass the ruleset provided");
         }
 
@@ -62,6 +61,25 @@ public class RuneliteController : ControllerBase
         if (clanName is not null && clanName != "LootChasers")
             return BadRequest("Invalid clan");
 
+        //Chat manager for running discord commands through RuneScape chat
+        if (inputType.name == "CHAT")
+        {
+            var client = _httpClientFactory.CreateClient();
+            using (client)
+            {
+                //TODO: Command manager to map commands to events
+                await MessageHandler.SendMessageAsync(inputType.webhook, "New event would start here", client);
+                Console.WriteLine($"Successfully transmitted {type} request from {user}");
+
+                return Ok(new
+                {
+                    Message = "Payload and file received successfully.",
+                    Payload = payloadJson,
+                });
+            }
+        }
+
+        //Regular upload path with images from normal endpoitns
         var file = form.Files["file"];
         using var multipartContent = new MultipartFormDataContent();
         var jsonContent = new StringContent(payloadJson!, System.Text.Encoding.UTF8, "application/json");

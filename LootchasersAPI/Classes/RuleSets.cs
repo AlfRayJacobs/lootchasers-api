@@ -32,4 +32,34 @@ namespace LootchasersAPI.Classes.RuleSets
             return items is null ? 0 : (long)items.Sum(x => x.Quantity * x.PriceEach);
         }
     }
+
+    public class ChatRuleset : IRuleSet
+    {
+        private readonly List<string> AllowedUsername = new()
+        {
+            "D M Fhe",
+            "AtomicEscape"
+        };
+
+        public bool ShouldSendNotification(string jsonContent)
+        {
+            var user = JsonParser.GetNodeFromJsonExtraValues(jsonContent, "source");
+            var chatType = JsonParser.GetNodeFromJsonExtraValues(jsonContent, "type");
+            var chatMessage = JsonParser.GetNodeFromJsonExtraValues(jsonContent, "message");
+
+            Console.WriteLine("Chat message received");
+
+            if (chatMessage is null || !chatMessage.Contains("Event"))
+                return false;
+
+            if (user is null || chatType != "PUBLICCHAT")
+            {
+                Console.WriteLine($"Chat message failed due to user ({user}) or chat type ({chatType})");
+                return false;
+            }
+
+            Console.WriteLine("Chat message should send");
+            return AllowedUsername.Contains(user);
+        }
+    }
 }

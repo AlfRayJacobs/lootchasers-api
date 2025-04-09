@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Tensorflow.Operations.Activation;
 using static LootchasersAPI.Services.JsonParser;
 
 namespace LootchasersAPI.Services
@@ -83,6 +84,25 @@ namespace LootchasersAPI.Services
                             return itemsList;
                         }
                     }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
+            return null;
+        }
+
+        public static string? GetNodeFromJsonExtraValues(string jsonContent, string searchTerm)
+        {
+            try
+            {
+                using (JsonDocument doc = JsonDocument.Parse(jsonContent))
+                {
+                    if (doc.RootElement.TryGetProperty("extra", out JsonElement extraElement))
+                        if (extraElement.TryGetProperty(searchTerm, out JsonElement propertyElement))
+                            return propertyElement.GetString();
                 }
             }
             catch
